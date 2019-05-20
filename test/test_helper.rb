@@ -3,6 +3,17 @@ require_relative '../config/environment'
 require 'rails/test_help'
 
 class ActiveSupport::TestCase
+    parallelize_setup do
+      Apartment::Tenant.drop('www') rescue nil
+      Apartment::Tenant.create('www')
+      Apartment::Tenant.switch! 'www'
+    end
+
+    parallelize_teardown do
+      Apartment::Tenant.drop('www') rescue nil
+      Apartment::Tenant.reset
+    end
+
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
 
